@@ -1,18 +1,19 @@
 import "./settings.css";
-import Sidebar from "../../components/Sidebar/Sidebar";
+import Sidebar from "../../components/sidebar/Sidebar";
 import { useContext, useState } from "react";
 import { Context } from "../../context/Context";
 import axios from "axios";
 
 export default function Settings() {
   const [file, setFile] = useState(null);
+  const [url, setUrl] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState(false);
 
   const { user, dispatch } = useContext(Context);
-  const PF = "http://localhost:5000/images/"
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,14 +25,21 @@ export default function Settings() {
       password,
     };
     if (file) {
-      const data = new FormData();
-      const filename = Date.now() + file.name;
-      data.append("name", filename);
+      const data =new FormData();
       data.append("file", file);
-      updatedUser.profilePic = filename;
-      try {
-        await axios.post("/upload", data);
-      } catch (err) {}
+      data.append("upload_preset", "travel-diaries");
+      data.append("cloud_name", "pulokc");
+      updatedUser.profilePic = url;
+      fetch("https://api.cloudinary.com/v1_1/pulokc/image/upload", {
+      method: "post",
+      body: data,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setUrl(data.url);
+      })
+      .catch((err) => {
+      });
     }
     try {
       const res = await axios.put("/users/" + user._id, updatedUser);
@@ -52,7 +60,7 @@ export default function Settings() {
           <label>Profile Picture</label>
           <div className="settingsPP">
             <img
-              src={file ? URL.createObjectURL(file) : PF+user.profilePic}
+              src={url ? URL.createObjectURL(file) : user.profilePic}
               alt=""
             />
             <label htmlFor="fileInput">

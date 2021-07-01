@@ -1,94 +1,50 @@
-import React from 'react'
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import "./sidebar.css";
 
 export default function Sidebar() {
-  return (
-            <div class="w-3/12 hidden xl:block">
+  const [cats, setCats] = useState([]);
 
-                <div class="w-full bg-white shadow-sm rounded-sm p-4 ">
-                    <h3 class="text-xl font-semibold text-gray-700 mb-3 font-roboto">Categories</h3>
-                    <div class="space-y-2">
-                        <a href="#"
-                            class="flex leading-4 items-center text-gray-700 font-semibold text-sm uppercase transition hover:text-blue-500">
-                            <span class="mr-2">
-                                <i class="far fa-folder-open"></i>
-                            </span>
-                            <span>Beauty</span>
-                            <p class="ml-auto font-normal">(12)</p>
-                        </a>
-                        <a href="#"
-                            class="flex leading-4 items-center text-gray-700 font-semibold text-sm uppercase transition hover:text-blue-500">
-                            <span class="mr-2">
-                                <i class="far fa-folder-open"></i>
-                            </span>
-                            <span>Business</span>
-                            <p class="ml-auto font-normal">(15)</p>
-                        </a>
-                        <a href="#"
-                            class="flex leading-4 items-center text-gray-700 font-semibold text-sm uppercase transition hover:text-blue-500">
-                            <span class="mr-2">
-                                <i class="far fa-folder-open"></i>
-                            </span>
-                            <span>Fashion</span>
-                            <p class="ml-auto font-normal">(5)</p>
-                        </a>
-                        <a href="#"
-                            class="flex leading-4 items-center text-gray-700 font-semibold text-sm uppercase transition hover:text-blue-500">
-                            <span class="mr-2">
-                                <i class="far fa-folder-open"></i>
-                            </span>
-                            <span>Food</span>
-                            <p class="ml-auto font-normal">(10)</p>
-                        </a>
-                        <a href="#"
-                            class="flex leading-4 items-center text-gray-700 font-semibold text-sm uppercase transition hover:text-blue-500">
-                            <span class="mr-2">
-                                <i class="far fa-folder-open"></i>
-                            </span>
-                            <span>Learn</span>
-                            <p class="ml-auto font-normal">(3)</p>
-                        </a>
-                        <a href="#"
-                            class="flex leading-4 items-center text-gray-700 font-semibold text-sm uppercase transition hover:text-blue-500">
-                            <span class="mr-2">
-                                <i class="far fa-folder-open"></i>
-                            </span>
-                            <span>Music</span>
-                            <p class="ml-auto font-normal">(7)</p>
-                        </a>
-                        <a href="#"
-                            class="flex leading-4 items-center text-gray-700 font-semibold text-sm uppercase transition hover:text-blue-500">
-                            <span class="mr-2">
-                                <i class="far fa-folder-open"></i>
-                            </span>
-                            <span>Nature</span>
-                            <p class="ml-auto font-normal">(0)</p>
-                        </a>
-                        <a href="#"
-                            class="flex leading-4 items-center text-gray-700 font-semibold text-sm uppercase transition hover:text-blue-500">
-                            <span class="mr-2">
-                                <i class="far fa-folder-open"></i>
-                            </span>
-                            <span>People</span>
-                            <p class="ml-auto font-normal">(13)</p>
-                        </a>
-                        <a href="#"
-                            class="flex leading-4 items-center text-gray-700 font-semibold text-sm uppercase transition hover:text-blue-500">
-                            <span class="mr-2">
-                                <i class="far fa-folder-open"></i>
-                            </span>
-                            <span>Sports</span>
-                            <p class="ml-auto font-normal">(7)</p>
-                        </a>
-                        <a href="#"
-                            class="flex leading-4 items-center text-gray-700 font-semibold text-sm uppercase transition hover:text-blue-500">
-                            <span class="mr-2">
-                                <i class="far fa-folder-open"></i>
-                            </span>
-                            <span>Technology</span>
-                            <p class="ml-auto font-normal">(17)</p>
-                        </a>
-                    </div>
-                </div> 
-                </div>
-  )
+  useEffect(() => {
+    const getCats = async () => {
+      const res = await axios.get("/categories");
+      setCats(res.data);
+    };
+    getCats();
+  }, []);
+  return (
+    <div className="sidebar">
+      <div className="sidebarItem">
+        <span className="sidebarTitle">ABOUT ME</span>
+        <img
+          src="https://i.pinimg.com/236x/1e/3f/58/1e3f587572a7a7b20bbf1828595a1786--holiday-party-themes-holiday-gift-guide.jpg"
+          alt=""
+        />
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate qui
+          necessitatibus nostrum illum reprehenderit.
+        </p>
+      </div>
+      <div className="sidebarItem">
+        <span className="sidebarTitle">CATEGORIES</span>
+        <ul className="sidebarList">
+          {cats.map((c) => (
+            <Link to={`/?cat=${c.name}`} className="link">
+            <li className="sidebarListItem">{c.name}</li>
+            </Link>
+          ))}
+        </ul>
+      </div>
+      <div className="sidebarItem">
+        <span className="sidebarTitle">FOLLOW US</span>
+        <div className="sidebarSocial">
+          <i className="sidebarIcon fab fa-facebook-square"></i>
+          <i className="sidebarIcon fab fa-twitter-square"></i>
+          <i className="sidebarIcon fab fa-pinterest-square"></i>
+          <i className="sidebarIcon fab fa-instagram-square"></i>
+        </div>
+      </div>
+    </div>
+  );
 }

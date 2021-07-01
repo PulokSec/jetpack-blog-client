@@ -8,6 +8,7 @@ export default function Write() {
   const [desc, setDesc] = useState("");
   const [file, setFile] = useState(null);
   const { user } = useContext(Context);
+  const [url, setUrl] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,20 +18,28 @@ export default function Write() {
       desc,
     };
     if (file) {
+
       const data =new FormData();
-      const filename = Date.now() + file.name;
-      data.append("name", filename);
       data.append("file", file);
-      newPost.photo = filename;
-      try {
-        await axios.post("/upload", data);
-      } catch (err) {}
+      data.append("upload_preset", "travel-diaries");
+      data.append("cloud_name", "pulokc");
+      newPost.photo = url;
+      fetch("https://api.cloudinary.com/v1_1/pulokc/image/upload", {
+      method: "post",
+      body: data,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setUrl(data.url);
+      })
+      .catch((err) => {
+      });
     }
-    try {
-      const res = await axios.post("/posts", newPost);
-      window.location.replace("/post/" + res.data._id);
-    } catch (err) {}
-  };
+   try {
+    const res = await axios.post("/posts", newPost);
+    window.location.replace("/post/" + res.data._id);
+   } catch (err) {}
+  }
   return (
     <div className="write">
       {file && (
@@ -70,3 +79,4 @@ export default function Write() {
     </div>
   );
 }
+

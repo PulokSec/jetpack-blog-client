@@ -22,7 +22,7 @@ export const ContextProvider = ({ children }) => {
         user: state.user,
         isFetching: state.isFetching,
         error: state.error,
-        dispatch,
+        dispatch
       }}
     >
       {children}
